@@ -1,5 +1,5 @@
 /*
-Copyright 2023 The Kubernetes Authors.
+Copyright 2024 The Kubernetes Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,14 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package resourceclaim
+// Note: this selects all types in the package.
+// +k8s:validation-gen=*
+// +k8s:validation-gen-scheme-registry=k8s.io/code-generator/cmd/validation-gen/testscheme.Scheme
 
-import (
-	"testing"
+// This is a test package.
+package issubresource
 
-	"k8s.io/kubernetes/test/integration/framework"
-)
+import "k8s.io/code-generator/cmd/validation-gen/testscheme"
 
-func TestMain(m *testing.M) {
-	framework.EtcdMain(m.Run)
+var localSchemeBuilder = testscheme.New()
+
+// Root resource is supported by default
+
+// +k8s:isSubresource=/scale
+
+// T1 is a test type
+type T1 struct {
+	// +k8s:validateTrue="field T1.S"
+	S string `json:"s"`
 }

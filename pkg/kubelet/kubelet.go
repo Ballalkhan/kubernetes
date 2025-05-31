@@ -425,7 +425,7 @@ func NewMainKubelet(kubeCfg *kubeletconfiginternal.KubeletConfiguration,
 	certDirectory string,
 	rootDirectory string,
 	podLogsDirectory string,
-	imageCredentialProviderConfigFile string,
+	imageCredentialProviderConfigPath string,
 	imageCredentialProviderBinDir string,
 	registerNode bool,
 	registerWithTaints []v1.Taint,
@@ -769,7 +769,7 @@ func NewMainKubelet(kubeCfg *kubeletconfiginternal.KubeletConfiguration,
 		int(kubeCfg.RegistryBurst),
 		kubeCfg.ImagePullCredentialsVerificationPolicy,
 		kubeCfg.PreloadedImagesVerificationAllowlist,
-		imageCredentialProviderConfigFile,
+		imageCredentialProviderConfigPath,
 		imageCredentialProviderBinDir,
 		singleProcessOOMKill,
 		kubeCfg.CPUCFSQuota,
@@ -1801,7 +1801,7 @@ func (kl *Kubelet) Run(updates <-chan kubetypes.PodUpdate) {
 	}
 
 	if utilfeature.DefaultFeatureGate.Enabled(features.SystemdWatchdog) {
-		kl.healthChecker.Start()
+		kl.healthChecker.Start(ctx)
 	}
 
 	kl.syncLoop(ctx, updates, kl)
