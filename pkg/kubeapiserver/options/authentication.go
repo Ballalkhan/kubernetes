@@ -321,7 +321,6 @@ func (o *BuiltInAuthenticationOptions) AddFlags(fs *pflag.FlagSet) {
 	fs.StringVar(&o.AuthenticationConfigFile, "authentication-config", o.AuthenticationConfigFile, ""+
 		"File with Authentication Configuration to configure the JWT Token authenticator or the anonymous authenticator. "+
 		"Requires the StructuredAuthenticationConfiguration feature gate. "+
-		"Also requires the feature gate AnonymousAuthConfigurableEndpoints to configure the anonymous authenticator in the config file. "+
 		"This flag is mutually exclusive with the --oidc-* flags if the file configures the JWT Token authenticator. "+
 		"This flag is mutually exclusive with --anonymous-auth if the file configures the Anonymous authenticator.")
 
@@ -567,7 +566,7 @@ func (o *BuiltInAuthenticationOptions) ToAuthenticationConfig() (kubeauthenticat
 		switch {
 		case ret.AuthenticationConfig.Anonymous != nil && o.Anonymous.FlagsSet:
 			// Flags and config file are mutually exclusive
-			return kubeauthenticator.Config{}, field.Forbidden(field.NewPath("anonymous"), "--anonynous-auth flag cannot be set when anonymous field is configured in authentication configuration file")
+			return kubeauthenticator.Config{}, field.Forbidden(field.NewPath("anonymous"), "--anonymous-auth flag cannot be set when anonymous field is configured in authentication configuration file")
 		case ret.AuthenticationConfig.Anonymous != nil:
 			// Use the config-file-specified values
 			ret.Anonymous = *ret.AuthenticationConfig.Anonymous
