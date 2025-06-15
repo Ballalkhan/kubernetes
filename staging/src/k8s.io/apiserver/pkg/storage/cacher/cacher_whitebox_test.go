@@ -42,6 +42,7 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/util/version"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/apiserver/pkg/apis/example"
@@ -188,7 +189,7 @@ func (d *dummyStorage) GetList(ctx context.Context, resPrefix string, opts stora
 func (d *dummyStorage) GuaranteedUpdate(_ context.Context, _ string, _ runtime.Object, _ bool, _ *storage.Preconditions, _ storage.UpdateFunc, _ runtime.Object) error {
 	return fmt.Errorf("unimplemented")
 }
-func (d *dummyStorage) Count(_ string) (int64, error) {
+func (d *dummyStorage) Count(_ context.Context, _ string) (int64, error) {
 	return 0, fmt.Errorf("unimplemented")
 }
 func (d *dummyStorage) ReadinessCheck() error {
@@ -832,6 +833,7 @@ func TestWatchCacheBypass(t *testing.T) {
 func TestTooManyRequestsNotReturned(t *testing.T) {
 	// Ensure that with ResilientWatchCacheInitialization feature disabled, we don't return 429
 	// errors when watchcache is not initialized.
+	featuregatetesting.SetFeatureGateEmulationVersionDuringTest(t, utilfeature.DefaultFeatureGate, version.MustParse("1.33"))
 	featuregatetesting.SetFeatureGateDuringTest(t, utilfeature.DefaultFeatureGate, features.ResilientWatchCacheInitialization, false)
 
 	dummyErr := fmt.Errorf("dummy")
